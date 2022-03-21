@@ -29,6 +29,7 @@ defined( 'WEBMENTION_VOUCH' ) || define( 'WEBMENTION_VOUCH', false );
 require_once dirname( __FILE__ ) . '/includes/class-webmention-admin.php';
 add_action( 'admin_init', array( 'Webmention_Admin', 'init' ) );
 add_action( 'admin_menu', array( 'Webmention_Admin', 'admin_menu' ) );
+add_action( 'enqueue_block_editor_assets', 'formatting_extender_classes' );
 
 /**
  * Initialize Webmention Plugin
@@ -164,6 +165,39 @@ function webmention_pings_open( $open, $post_id ) {
 function webmention_plugin_textdomain() {
 	load_plugin_textdomain( 'webmention', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
+
+/**
+ * Load the compiled blocks into the editor.
+ *
+ *
+ */
+function formatting_extender_classes() {
+
+	wp_enqueue_script(
+		'fe-rsvp-js',
+		plugins_url('/includes/js/rsvp.js',  __FILE__),
+		array( 'wp-blocks', 'wp-element', 'wp-components', 'wp-editor' ),
+		'1.0.2',
+		true
+	);
+
+	wp_enqueue_script(
+		'fe-like-js',
+		plugins_url('/includes/js/like.js',  __FILE__),
+		array( 'wp-blocks', 'wp-element', 'wp-components', 'wp-editor' ),
+		'1.0.2',
+		true
+	);
+
+	// Load the compiled styles into the editor
+	wp_enqueue_style(
+		'fe-extend-css',
+		plugins_url('/includes/css/styles.css', __FILE__),
+		array( 'wp-edit-blocks' )
+	);
+
+}
+
 
 /**
  * Extend NodeInfo data.
